@@ -13,15 +13,34 @@ import { fadeInUp, scaleIn, slideInFromBottom } from "@/lib/animations"
 import { FloatingParticles } from "@/components/floating-particles"
 import Image from "next/image"
 
+interface Animation {
+  initial: {
+    opacity?: number
+    x?: number
+    y?: number
+    scale?: number
+  }
+  animate: {
+    opacity?: number
+    x?: number
+    y?: number
+    scale?: number
+  }
+  transition: {
+    duration: number
+    ease: number[] | string
+  }
+}
+
 interface AnimatedElementProps {
   children: React.ReactNode
-  animation?: any
+  animation?: Animation
   delay?: number
   className?: string
 }
 
 function AnimatedElement({ children, animation = fadeInUp, delay = 0, className = "" }: AnimatedElementProps) {
-  const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 })
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 })
 
   return (
     <div
