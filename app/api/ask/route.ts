@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       replyTo: email,
       subject: `New Question from ${name || "Anonymous"} - Ask Wajdi`,
       html: `
-        <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #f8fafc; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
             <h1 style="color: #1e293b; font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">New Question from AskWajdi</h1>
             <p style="color: #64748b; margin: 0; font-size: 14px;">Received ${new Date().toLocaleString()}</p>
@@ -85,7 +85,7 @@ Received: ${new Date().toLocaleString()}
 
     // Prepare email content for logging
     const htmlContent = `
-        <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #f8fafc; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
             <h1 style="color: #1e293b; font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">New Question from AskWajdi</h1>
             <p style="color: #64748b; margin: 0; font-size: 14px;">Received ${new Date().toLocaleString()}</p>
@@ -127,7 +127,7 @@ This email was sent from askwajdi.com
 Received: ${new Date().toLocaleString()}
       `.trim()
 
-    // Log to MongoDB via separate API call (non-blocking)
+    // Log to Supabase via separate API call (non-blocking)
     fetch(`${getBaseUrl()}/api/log-email`, {
       method: 'POST',
       headers: {
@@ -147,12 +147,12 @@ Received: ${new Date().toLocaleString()}
     }).then(async (response) => {
       if (response.ok) {
         const result = await response.json()
-        console.log("Email logged to MongoDB with ID:", result.mongoLogId)
+        console.log("Email logged to Supabase with ID:", result.logId)
       } else {
-        console.error("Failed to log email to MongoDB:", response.statusText)
+        console.error("Failed to log email to Supabase:", response.statusText)
       }
     }).catch((error) => {
-      console.error("Failed to log email to MongoDB (non-blocking):", error)
+      console.error("Failed to log email to Supabase (non-blocking):", error)
     })
 
     return NextResponse.json<AskWajdiResponse>(
@@ -165,7 +165,7 @@ Received: ${new Date().toLocaleString()}
   } catch (error) {
     console.error("Error processing question:", error)
 
-    // Log failed email to MongoDB via separate API call (non-blocking)
+    // Log failed email to Supabase via separate API call (non-blocking)
     fetch(`${getBaseUrl()}/api/log-email`, {
       method: 'POST',
       headers: {
@@ -185,12 +185,12 @@ Received: ${new Date().toLocaleString()}
     }).then(async (response) => {
       if (response.ok) {
         const result = await response.json()
-        console.log("Failed email logged to MongoDB with ID:", result.mongoLogId)
+        console.log("Failed email logged to Supabase with ID:", result.logId)
       } else {
-        console.error("Failed to log error to MongoDB:", response.statusText)
+        console.error("Failed to log error to Supabase:", response.statusText)
       }
     }).catch((logError) => {
-      console.error("Failed to log error to MongoDB (non-blocking):", logError)
+      console.error("Failed to log error to Supabase (non-blocking):", logError)
     })
 
     // Handle specific Resend errors

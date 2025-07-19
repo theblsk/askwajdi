@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { logEmail } from "@/lib/mongodb"
+import { logEmail } from "@/lib/supabase"
 
 interface LogEmailRequest {
   senderEmail: string
@@ -16,7 +16,7 @@ interface LogEmailRequest {
 
 interface LogEmailResponse {
   success: boolean
-  mongoLogId?: string
+  logId?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<LogEmailResponse>({ success: false }, { status: 400 })
     }
 
-    // Log to MongoDB
-    const mongoLogId = await logEmail({
+    // Log to Supabase
+    const logId = await logEmail({
       senderEmail: body.senderEmail,
       senderName: body.senderName,
       question: body.question,
@@ -40,14 +40,14 @@ export async function POST(request: NextRequest) {
       errorMessage: body.errorMessage,
     })
 
-    if (mongoLogId) {
-      console.log("Email logged to MongoDB with ID:", mongoLogId)
+    if (logId) {
+      console.log("Email logged to Supabase with ID:", logId)
       return NextResponse.json<LogEmailResponse>({ 
         success: true, 
-        mongoLogId 
+        logId 
       }, { status: 200 })
     } else {
-      console.error("Failed to log email to MongoDB")
+      console.error("Failed to log email to Supabase")
       return NextResponse.json<LogEmailResponse>({ success: false }, { status: 500 })
     }
   } catch (error) {
