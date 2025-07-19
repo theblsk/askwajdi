@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { Resend } from "resend"
-import { logEmail } from "@/lib/mongodb"
 import type { AskWajdiRequest, AskWajdiResponse, AskWajdiError } from "@/types/api"
+import { getBaseUrl } from "@/lib/utils"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -83,7 +83,7 @@ Received: ${new Date().toLocaleString()}
 
     console.log("Email sent successfully:", emailData)
 
-    // Log to MongoDB (non-blocking - don't wait for result)
+    // Prepare email content for logging
     const htmlContent = `
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #f8fafc; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
@@ -127,19 +127,30 @@ This email was sent from askwajdi.com
 Received: ${new Date().toLocaleString()}
       `.trim()
 
-    // Fire-and-forget MongoDB logging (non-blocking)
-    logEmail({
-      senderEmail: email,
-      senderName: name,
-      question: question,
-      emailContent: {
-        html: htmlContent,
-        text: textContent,
+    // Log to MongoDB via separate API call (non-blocking)
+    fetch(`${getBaseUrl()}/api/log-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      resendEmailId: emailData.data?.id,
-      status: 'sent',
-    }).then((mongoLogId) => {
-      console.log("Email logged to MongoDB with ID:", mongoLogId)
+      body: JSON.stringify({
+        senderEmail: email,
+        senderName: name,
+        question: question,
+        emailContent: {
+          html: htmlContent,
+          text: textContent,
+        },
+        resendEmailId: emailData.data?.id,
+        status: 'sent',
+      }),
+    }).then(async (response) => {
+      if (response.ok) {
+        const result = await response.json()
+        console.log("Email logged to MongoDB with ID:", result.mongoLogId)
+      } else {
+        console.error("Failed to log email to MongoDB:", response.statusText)
+      }
     }).catch((error) => {
       console.error("Failed to log email to MongoDB (non-blocking):", error)
     })
@@ -154,19 +165,30 @@ Received: ${new Date().toLocaleString()}
   } catch (error) {
     console.error("Error processing question:", error)
 
-    // Log failed email to MongoDB (non-blocking)
-    logEmail({
-      senderEmail: email || "unknown",
-      senderName: name,
-      question: question || "unknown",
-      emailContent: {
-        html: "",
-        text: "",
+    // Log failed email to MongoDB via separate API call (non-blocking)
+    fetch(`${getBaseUrl()}/api/log-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      status: 'failed',
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
-    }).then((failedEmailLog) => {
-      console.log("Failed email logged to MongoDB with ID:", failedEmailLog)
+      body: JSON.stringify({
+        senderEmail: email || "unknown",
+        senderName: name,
+        question: question || "unknown",
+        emailContent: {
+          html: "",
+          text: "",
+        },
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
+      }),
+    }).then(async (response) => {
+      if (response.ok) {
+        const result = await response.json()
+        console.log("Failed email logged to MongoDB with ID:", result.mongoLogId)
+      } else {
+        console.error("Failed to log error to MongoDB:", response.statusText)
+      }
     }).catch((logError) => {
       console.error("Failed to log error to MongoDB (non-blocking):", logError)
     })
