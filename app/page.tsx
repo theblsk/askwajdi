@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 import { fadeInUp, scaleIn, slideInFromBottom } from "@/lib/animations"
+import { generateEmailContent } from "@/lib/email-templates"
 import { FloatingParticles } from "@/components/floating-particles"
 import Image from "next/image"
 
@@ -119,6 +120,7 @@ export default function HomePage() {
     setIsSubmitting(true)
 
     try {
+      // First API call: Send the email
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
@@ -128,17 +130,79 @@ export default function HomePage() {
       })
     
       if (response.ok) {
+        const result = await response.json()
+        
+        // Show success message to user
         toast({
           title: "Question submitted!",
           description: "Thanks for your question. Wajdi will get back to you soon.",
         })
+        
+        // Clear form
         setFormData({ name: "", email: "", question: "" })
         setErrors({})
+        
+        // Second API call: Log the email (silent - no user notification)
+        try {
+          // Generate email content for logging using template
+          const emailContent = generateEmailContent({
+            name: formData.name,
+            email: formData.email,
+            question: formData.question
+          })
+
+          await fetch("/api/log-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              senderEmail: formData.email,
+              senderName: formData.name,
+              question: formData.question,
+              emailContent,
+              resendEmailId: result.emailId,
+              status: 'sent',
+            }),
+          })
+          // Note: We don't handle the response or show any user notification for logging
+        } catch (logError) {
+          // Silent logging - only console log, no user notification
+          console.error("Failed to log email:", logError)
+        }
+        
       } else {
         throw new Error("Failed to submit question")
       }
     } catch (error) {
       console.error("Error submitting question:", error)
+      
+      // Log failed attempt (silent - no user notification)
+      try {
+        await fetch("/api/log-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            senderEmail: formData.email || "unknown",
+            senderName: formData.name,
+            question: formData.question || "unknown",
+            emailContent: {
+              html: "",
+              text: "",
+            },
+            status: 'failed',
+            errorMessage: error instanceof Error ? error.message : "Unknown error",
+          }),
+        })
+        // Note: We don't handle the response or show any user notification for logging
+      } catch (logError) {
+        // Silent logging - only console log, no user notification
+        console.error("Failed to log error:", logError)
+      }
+      
+      // Show error message to user
       toast({
         title: "Error",
         description: "Failed to submit your question. Please try again.",
