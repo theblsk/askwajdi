@@ -208,7 +208,7 @@ export default function HomePage() {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12 max-w-6xl relative z-10">
-        {/* Hero Section */}
+        {/* Hero Section with Form First */}
         <div className="text-center mb-16 space-y-8">
           {/* Brand */}
           <AnimatedElement animation={fadeInUp} delay={0}>
@@ -227,82 +227,11 @@ export default function HomePage() {
               </p>
             </div>
           </AnimatedElement>
-
-          {/* Profile Section */}
-          <div className="flex flex-col items-center space-y-6">
-            <AnimatedElement animation={scaleIn} delay={200}>
-              <div className="relative">
-                <div
-                  className={`absolute inset-0 rounded-full blur-xl ${
-                    darkMode ? "bg-blue-500/20" : "bg-blue-500/10"
-                  } animate-pulse-glow`}
-                ></div>
-                <Image
-                  src="/images/wajdi-profile.jpg"
-                  alt="Wajdi Ballout"
-                  width={120}
-                  height={120}
-                  className={`relative w-24 h-24 md:w-30 md:h-30 rounded-full object-cover border-4 transition-all duration-300 hover:scale-105 ${
-                    darkMode ? "border-blue-400/50" : "border-blue-500/30"
-                  }`}
-                  priority
-                />
-              </div>
-            </AnimatedElement>
-
-            <AnimatedElement animation={fadeInUp} delay={400}>
-              <div className="text-center space-y-2">
-                <h2 className="text-2xl md:text-3xl font-semibold">Wajdi Ballout</h2>
-                <p className={`text-lg ${darkMode ? "text-blue-300" : "text-blue-600"} font-medium`}>
-                  Software Engineer
-                </p>
-                <p
-                  className={`max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${
-                    darkMode ? "text-white/80" : "text-gray-700"
-                  }`}
-                >
-                  Passionate about building scalable systems that solve real-world problems. I specialize in distributed
-                  architectures, performance optimization, and creating robust solutions that handle growth.
-                </p>
-              </div>
-            </AnimatedElement>
-          </div>
         </div>
 
-        {/* Expertise Grid */}
-        <AnimatedElement animation={fadeInUp} delay={0}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {expertiseAreas.map((area, index) => (
-              <AnimatedElement key={area.title} animation={fadeInUp} delay={index * 100} className="h-full">
-                <div
-                  className={`group p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full backdrop-blur-sm ${
-                    darkMode
-                      ? "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                      : "bg-white/80 hover:bg-white border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow-lg"
-                  }`}
-                >
-                  <div
-                    className={`inline-flex p-3 rounded-xl mb-4 transition-colors ${
-                      darkMode
-                        ? "bg-blue-500/20 text-blue-300 group-hover:bg-blue-500/30"
-                        : "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
-                    }`}
-                  >
-                    {area.icon}
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">{area.title}</h3>
-                  <p className={`text-sm leading-relaxed ${darkMode ? "text-white/70" : "text-gray-600"}`}>
-                    {area.description}
-                  </p>
-                </div>
-              </AnimatedElement>
-            ))}
-          </div>
-        </AnimatedElement>
-
-        {/* Question Form */}
+        {/* Question Form - Now First */}
         <AnimatedElement animation={slideInFromBottom} delay={0}>
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto mb-16">
             <div
               className={`p-8 md:p-10 rounded-3xl backdrop-blur-sm transition-all duration-300 ${
                 darkMode
@@ -395,12 +324,117 @@ export default function HomePage() {
           </div>
         </AnimatedElement>
 
+        {/* Scroll Indicator */}
+        <AnimatedElement animation={fadeInUp} delay={600}>
+          <div className="text-center mb-16 mt-24">
+            <div
+              className={`inline-flex flex-col items-center space-y-4 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105 ${
+                darkMode
+                  ? "bg-white/5 border border-white/10 hover:bg-white/10"
+                  : "bg-white/80 border border-gray-200/50 hover:bg-white shadow-sm hover:shadow-lg"
+              }`}
+            >
+              <p className={`text-lg font-medium ${darkMode ? "text-white/90" : "text-gray-800"}`}>
+                Want to know more about Wajdi?
+              </p>
+              <p className={`text-sm ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                Scroll down to see credentials and expertise
+              </p>
+              <div className="flex flex-col items-center space-y-2 animate-bounce">
+                <div className={`w-6 h-10 rounded-full border-2 flex justify-center ${
+                  darkMode ? "border-white/30" : "border-gray-400"
+                }`}>
+                  <div className={`w-1 h-3 rounded-full mt-2 animate-pulse ${
+                    darkMode ? "bg-white/50" : "bg-gray-500"
+                  }`}></div>
+                </div>
+                <div className={`text-xs ${darkMode ? "text-white/50" : "text-gray-500"}`}>
+                  Scroll
+                </div>
+              </div>
+            </div>
+          </div>
+        </AnimatedElement>
+
+        {/* Profile Section - Now Below Form */}
+        <div className="text-center mb-16 space-y-8">
+          <div className="flex flex-col items-center space-y-6">
+            <AnimatedElement animation={scaleIn} delay={200}>
+              <div className="relative">
+                <div
+                  className={`absolute inset-0 rounded-full blur-xl ${
+                    darkMode ? "bg-blue-500/20" : "bg-blue-500/10"
+                  } animate-pulse-glow`}
+                ></div>
+                <Image
+                  src="/images/wajdi-profile.jpg"
+                  alt="Wajdi Ballout"
+                  width={120}
+                  height={120}
+                  className={`relative w-24 h-24 md:w-30 md:h-30 rounded-full object-cover border-4 transition-all duration-300 hover:scale-105 ${
+                    darkMode ? "border-blue-400/50" : "border-blue-500/30"
+                  }`}
+                  priority
+                />
+              </div>
+            </AnimatedElement>
+
+            <AnimatedElement animation={fadeInUp} delay={400}>
+              <div className="text-center space-y-2">
+                <h2 className="text-2xl md:text-3xl font-semibold">Wajdi Ballout</h2>
+                <p className={`text-lg ${darkMode ? "text-blue-300" : "text-blue-600"} font-medium`}>
+                  Software Engineer
+                </p>
+                <p
+                  className={`max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${
+                    darkMode ? "text-white/80" : "text-gray-700"
+                  }`}
+                >
+                  Passionate about building scalable systems that solve real-world problems. I specialize in distributed
+                  architectures, performance optimization, and creating robust solutions that handle growth.
+                </p>
+              </div>
+            </AnimatedElement>
+          </div>
+        </div>
+
+        {/* Expertise Grid */}
+        <AnimatedElement animation={fadeInUp} delay={0}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {expertiseAreas.map((area, index) => (
+              <AnimatedElement key={area.title} animation={fadeInUp} delay={index * 100} className="h-full">
+                <div
+                  className={`group p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full backdrop-blur-sm ${
+                    darkMode
+                      ? "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
+                      : "bg-white/80 hover:bg-white border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow-lg"
+                  }`}
+                >
+                  <div
+                    className={`inline-flex p-3 rounded-xl mb-4 transition-colors ${
+                      darkMode
+                        ? "bg-blue-500/20 text-blue-300 group-hover:bg-blue-500/30"
+                        : "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
+                    }`}
+                  >
+                    {area.icon}
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">{area.title}</h3>
+                  <p className={`text-sm leading-relaxed ${darkMode ? "text-white/70" : "text-gray-600"}`}>
+                    {area.description}
+                  </p>
+                </div>
+              </AnimatedElement>
+            ))}
+          </div>
+        </AnimatedElement>
+
         {/* Footer */}
         <AnimatedElement animation={fadeInUp} delay={0}>
           <div className="text-center mt-16 space-y-6">
             <div className="flex justify-center space-x-8">
               <a
-                href="https://linkedin.com/in/wajdiballout"
+                href="https://www.linkedin.com/in/wajdi-ballout-/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`group flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 ${
@@ -422,7 +456,7 @@ export default function HomePage() {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 }`}
               >
-                <span className="font-medium">blsk.dev</span>
+                <span className="font-medium">{`Let's Work Together`}</span>
                 <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </a>
             </div>
