@@ -107,7 +107,7 @@ export default function HomePage() {
         },
         body: JSON.stringify(formData),
       })
-
+    
       if (response.ok) {
         toast({
           title: "Question submitted!",
@@ -119,6 +119,7 @@ export default function HomePage() {
         throw new Error("Failed to submit question")
       }
     } catch (error) {
+      console.error("Error submitting question:", error)
       toast({
         title: "Error",
         description: "Failed to submit your question. Please try again.",
