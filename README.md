@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AskWajdi Landing Page
 
-## Getting Started
+A minimal, modern landing page for askwajdi.com that allows software developers to ask Wajdi Ballout questions.
 
-First, run the development server:
+## Features
 
-```bash
+- Clean, professional developer-focused design
+- Dark/light mode toggle with system preference detection
+- Responsive form with validation
+- Email notifications via Resend
+- Built with Next.js 15 and Tailwind CSS
+
+## Setup
+
+### 1. Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in your values:
+
+\`\`\`bash
+cp .env.example .env.local
+\`\`\`
+
+### 2. Resend Configuration
+
+1. Sign up at [resend.com](https://resend.com)
+2. Get your API key from the dashboard
+3. Add your domain and verify it (or use the sandbox domain for testing)
+4. Update the environment variables:
+   - `RESEND_API_KEY`: Your Resend API key
+   - `WAJDI_EMAIL`: The email address where questions should be sent
+   - `FROM_EMAIL_DOMAIN`: Your verified domain (e.g., askwajdi.com)
+
+### 3. Update Email Configuration
+
+In `app/api/ask/route.ts`, update these values:
+- `from`: Change to your verified domain email
+- `to`: Change to Wajdi's actual email address
+
+### 4. Install and Run
+
+\`\`\`bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Email Template
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The system sends beautifully formatted HTML emails with:
+- Contact information (name and email)
+- The full question text
+- Timestamp
+- Professional styling matching the site design
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+Deploy to Vercel with one click, or manually:
 
-To learn more about Next.js, take a look at the following resources:
+1. Push to GitHub
+2. Connect to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Domain Setup for Production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For production use:
+1. Add your domain to Resend
+2. Add the required DNS records
+3. Wait for verification
+4. Update the `from` email address in the API route
