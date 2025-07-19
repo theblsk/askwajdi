@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { PWAStatus } from "@/components/pwa-status"
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -142,6 +143,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} font-sans antialiased`}>
         {children}
+        <Analytics />
         <PWAStatus />
         <Toaster />
       </body>
